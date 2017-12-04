@@ -1,0 +1,5 @@
+
+*.xcodeproj
+build/iso/*
+build/obj/*
+build/*.bin

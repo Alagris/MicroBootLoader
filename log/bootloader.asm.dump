@@ -1,0 +1,278 @@
+
+build/obj/bootloader.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000007c00 <boot_begin>:
+    7c00:	ea                   	(bad)  
+    7c01:	05 7c 00 00        	add    $0xfa00007c,%eax
+
+0000000000007c05 <__start_16>:
+    7c05:	fa                   	cli    
+    7c06:	31 c0                	xor    %eax,%eax
+    7c08:	8e d8                	mov    %eax,%ds
+    7c0a:	8e c0                	mov    %eax,%es
+    7c0c:	8e e0                	mov    %eax,%fs
+    7c0e:	8e e8                	mov    %eax,%gs
+    7c10:	89 c5                	mov    %eax,%ebp
+    7c12:	8e d0                	mov    %eax,%ss
+    7c14:	89 ec                	mov    %ebp,%esp
+    7c16:	6a 01                	pushq  $0x1
+    7c18:	6a 01                	pushq  $0x1
+    7c1a:	68 80 00 68 fe       	pushq  $0xfffffffffe680080
+    7c1f:	7d                 	jge    7bda <__bytes_per_page_ld+0x7928>
+
+0000000000007c20 <loop>:
+    7c20:	b9 03 00 66 89       	mov    $0x89660003,%ecx
+    7c25:	e6 e8                	out    %al,$0xe8
+    7c27:	19 01                	sbb    %eax,(%rcx)
+    7c29:	e8 56 01 b9 17       	callq  17b97d84 <__gdt_descriptor_ld+0x17b8ffbd>
+    7c2e:	00 67 8b             	add    %ah,-0x75(%rdi)
+    7c31:	34 24                	xor    $0x24,%al
+    7c33:	e8 40 01 b4 00       	callq  b47d78 <__gdt_descriptor_ld+0xb3ffb1>
+    7c38:	cd 16                	int    $0x16
+    7c3a:	e8 52 01 3c 77       	callq  773c7d91 <__gdt_descriptor_ld+0x773bffca>
+    7c3f:	74 38                	je     7c79 <w_pressed>
+    7c41:	3c 73                	cmp    $0x73,%al
+    7c43:	74 3c                	je     7c81 <s_pressed>
+    7c45:	3c 65                	cmp    $0x65,%al
+    7c47:	74 40                	je     7c89 <e_pressed>
+    7c49:	3c 64                	cmp    $0x64,%al
+    7c4b:	74 43                	je     7c90 <d_pressed>
+    7c4d:	3c 72                	cmp    $0x72,%al
+    7c4f:	74 46                	je     7c97 <r_pressed>
+    7c51:	3c 66                	cmp    $0x66,%al
+    7c53:	74 49                	je     7c9e <f_pressed>
+    7c55:	3c 74                	cmp    $0x74,%al
+    7c57:	74 4c                	je     7ca5 <t_pressed>
+    7c59:	3c 67                	cmp    $0x67,%al
+    7c5b:	74 4f                	je     7cac <g_pressed>
+    7c5d:	3c 6c                	cmp    $0x6c,%al
+    7c5f:	74 6e                	je     7ccf <l_pressed>
+    7c61:	3c 6a                	cmp    $0x6a,%al
+    7c63:	0f 84 85 00 3c 7a    	je     7a3c7cee <__gdt_descriptor_ld+0x7a3bff27>
+    7c69:	74 48                	je     7cb3 <z_pressed>
+    7c6b:	3c 78                	cmp    $0x78,%al
+    7c6d:	74 4a                	je     7cb9 <x_pressed>
+    7c6f:	3c 71                	cmp    $0x71,%al
+    7c71:	74 4c                	je     7cbf <q_pressed>
+    7c73:	3c 61                	cmp    $0x61,%al
+    7c75:	74 50                	je     7cc7 <a_pressed>
+    7c77:	eb 79                	jmp    7cf2 <continue_loop>
+
+0000000000007c79 <w_pressed>:
+    7c79:	67 81 2c 24 94 02 eb 	subl   $0x71eb0294,(%esp)
+    7c80:	71 
+
+0000000000007c81 <s_pressed>:
+    7c81:	67 81 04 24 94 02 eb 	addl   $0x69eb0294,(%esp)
+    7c88:	69 
+
+0000000000007c89 <e_pressed>:
+    7c89:	67 ff 44 24 02       	incl   0x2(%esp)
+    7c8e:	eb 62                	jmp    7cf2 <continue_loop>
+
+0000000000007c90 <d_pressed>:
+    7c90:	67 ff 4c 24 02       	decl   0x2(%esp)
+    7c95:	eb 5b                	jmp    7cf2 <continue_loop>
+
+0000000000007c97 <r_pressed>:
+    7c97:	67 ff 44 24 04       	incl   0x4(%esp)
+    7c9c:	eb 54                	jmp    7cf2 <continue_loop>
+
+0000000000007c9e <f_pressed>:
+    7c9e:	67 ff 4c 24 04       	decl   0x4(%esp)
+    7ca3:	eb 4d                	jmp    7cf2 <continue_loop>
+
+0000000000007ca5 <t_pressed>:
+    7ca5:	67 ff 44 24 06       	incl   0x6(%esp)
+    7caa:	eb 46                	jmp    7cf2 <continue_loop>
+
+0000000000007cac <g_pressed>:
+    7cac:	67 ff 4c 24 06       	decl   0x6(%esp)
+    7cb1:	eb 3f                	jmp    7cf2 <continue_loop>
+
+0000000000007cb3 <z_pressed>:
+    7cb3:	67 ff 04 24          	incl   (%esp)
+    7cb7:	eb 39                	jmp    7cf2 <continue_loop>
+
+0000000000007cb9 <x_pressed>:
+    7cb9:	67 ff 0c 24          	decl   (%esp)
+    7cbd:	eb 33                	jmp    7cf2 <continue_loop>
+
+0000000000007cbf <q_pressed>:
+    7cbf:	67 81 2c 24 1e 00 eb 	subl   $0x2beb001e,(%esp)
+    7cc6:	2b 
+
+0000000000007cc7 <a_pressed>:
+    7cc7:	67 81 04 24 1e 00 eb 	addl   $0x23eb001e,(%esp)
+    7cce:	23 
+
+0000000000007ccf <l_pressed>:
+    7ccf:	b4 02                	mov    $0x2,%ah
+    7cd1:	67 8a 44 24 06       	mov    0x6(%esp),%al
+    7cd6:	67 8a 54 24 02       	mov    0x2(%esp),%dl
+    7cdb:	b5 00                	mov    $0x0,%ch
+    7cdd:	b6 00                	mov    $0x0,%dh
+    7cdf:	67 8a 4c 24 04       	mov    0x4(%esp),%cl
+    7ce4:	67 8b 1c 24          	mov    (%esp),%ebx
+    7ce8:	cd 13                	int    $0x13
+    7cea:	eb 06                	jmp    7cf2 <continue_loop>
+
+0000000000007cec <j_pressed>:
+    7cec:	58                   	pop    %rax
+    7ced:	bc 00 00 ff e0       	mov    $0xe0ff0000,%esp
+
+0000000000007cf2 <continue_loop>:
+    7cf2:	e9 2b ff         	jmpq   a3d7c22 <__gdt_descriptor_ld+0xa3cfe5b>
+
+0000000000007cf5 <debugnibble>:
+    7cf5:	3c 0a                	cmp    $0xa,%al
+    7cf7:	7c 04                	jl     7cfd <debughex_digit>
+
+0000000000007cf9 <debughex_letter>:
+    7cf9:	04 37                	add    $0x37,%al
+    7cfb:	eb 02                	jmp    7cff <end>
+
+0000000000007cfd <debughex_digit>:
+    7cfd:	04 30                	add    $0x30,%al
+
+0000000000007cff <end>:
+    7cff:	b4 0e                	mov    $0xe,%ah
+    7d01:	cd 10                	int    $0x10
+    7d03:	c3                   	retq   
+
+0000000000007d04 <debughexb>:
+    7d04:	50                   	push   %rax
+    7d05:	c0 e8 04             	shr    $0x4,%al
+    7d08:	e8 ea ff 67 8b       	callq  ffffffff8b687cf7 <__gdt_descriptor_ld+0xffffffff8b67ff30>
+    7d0d:	04 24                	add    $0x24,%al
+    7d0f:	24 0f                	and    $0xf,%al
+    7d11:	e8 e1 ff 58 c3       	callq  ffffffffc3597cf7 <__gdt_descriptor_ld+0xffffffffc358ff30>
+
+0000000000007d16 <debughexw>:
+    7d16:	50                   	push   %rax
+    7d17:	88 e0                	mov    %ah,%al
+    7d19:	e8 e8 ff 58 e8       	callq  ffffffffe8597d06 <__gdt_descriptor_ld+0xffffffffe858ff3f>
+    7d1e:	e4 ff                	in     $0xff,%al
+    7d20:	c3                   	retq   
+
+0000000000007d21 <debughexab>:
+    7d21:	83 f9 00             	cmp    $0x0,%ecx
+    7d24:	74 13                	je     7d39 <debughexab_end>
+
+0000000000007d26 <debughexab_loop>:
+    7d26:	ac                   	lods   %ds:(%rsi),%al
+    7d27:	e8 da ff ac e8       	callq  ffffffffe8ad7d06 <__gdt_descriptor_ld+0xffffffffe8acff3f>
+    7d2c:	d6                   	(bad)  
+    7d2d:	ff 50 b0             	callq  *-0x50(%rax)
+    7d30:	20 b4 0e cd 10 58 49 	and    %dh,0x495810cd(%rsi,%rcx,1)
+    7d37:	75 ed                	jne    7d26 <debughexab_loop>
+
+0000000000007d39 <debughexab_end>:
+    7d39:	ac                   	lods   %ds:(%rsi),%al
+    7d3a:	e8 c7 ff ac e8       	callq  ffffffffe8ad7d06 <__gdt_descriptor_ld+0xffffffffe8acff3f>
+    7d3f:	c3                   	retq   
+    7d40:	ff c3                	inc    %ebx
+
+0000000000007d42 <debughexaw>:
+    7d42:	83 f9 00             	cmp    $0x0,%ecx
+    7d45:	74 0f                	je     7d56 <debughexaw_end>
+
+0000000000007d47 <debughexaw_loop>:
+    7d47:	ad                   	lods   %ds:(%rsi),%eax
+    7d48:	e8 cb ff 50 b0       	callq  ffffffffb0517d18 <__gdt_descriptor_ld+0xffffffffb050ff51>
+    7d4d:	20 b4 0e cd 10 58 49 	and    %dh,0x495810cd(%rsi,%rcx,1)
+    7d54:	75 f1                	jne    7d47 <debughexaw_loop>
+
+0000000000007d56 <debughexaw_end>:
+    7d56:	ad                   	lods   %ds:(%rsi),%eax
+    7d57:	e8 bc ff c3        	callq  50c47d18 <__gdt_descriptor_ld+0x50c3ff51>
+
+0000000000007d5b <debughexline>:
+    7d5b:	50                   	push   %rax
+    7d5c:	51                   	push   %rcx
+    7d5d:	89 f0                	mov    %esi,%eax
+    7d5f:	e8 b4 ff 50 b0       	callq  ffffffffb0517d18 <__gdt_descriptor_ld+0xffffffffb050ff51>
+    7d64:	3a b4 0e cd 10 58 b9 	cmp    -0x46a7ef33(%rsi,%rcx,1),%dh
+    7d6b:	0e                   	(bad)  
+    7d6c:	00 e8                	add    %ch,%al
+    7d6e:	b1 ff                	mov    $0xff,%cl
+    7d70:	e8 0f 00 59 58       	callq  58597d84 <__gdt_descriptor_ld+0x5858ffbd>
+    7d75:	c3                   	retq   
+
+0000000000007d76 <debughexlines>:
+    7d76:	83 f9 00             	cmp    $0x0,%ecx
+    7d79:	74 06                	je     7d81 <debughexlines_end>
+
+0000000000007d7b <debughexlines_loop>:
+    7d7b:	e8 dd ff 49 75       	callq  754a7d5d <__gdt_descriptor_ld+0x7549ff96>
+    7d80:	fa                   	cli    
+
+0000000000007d81 <debughexlines_end>:
+    7d81:	c3                   	retq   
+
+0000000000007d82 <println>:
+    7d82:	50                   	push   %rax
+    7d83:	b4 0e                	mov    $0xe,%ah
+    7d85:	b0 0a                	mov    $0xa,%al
+    7d87:	cd 10                	int    $0x10
+    7d89:	b0 0d                	mov    $0xd,%al
+    7d8b:	cd 10                	int    $0x10
+    7d8d:	58                   	pop    %rax
+    7d8e:	c3                   	retq   
+
+0000000000007d8f <clear>:
+    7d8f:	50                   	push   %rax
+    7d90:	53                   	push   %rbx
+    7d91:	51                   	push   %rcx
+    7d92:	52                   	push   %rdx
+    7d93:	b8 00 06 b7 07       	mov    $0x7b70600,%eax
+    7d98:	b9 00 00 ba 4f       	mov    $0x4fba0000,%ecx
+    7d9d:	18 cd                	sbb    %cl,%ch
+    7d9f:	10 b6 00 b2 00 b4    	adc    %dh,-0x4bff4e00(%rsi)
+    7da5:	02 b7 00 cd 10 5a    	add    0x5a10cd00(%rdi),%dh
+    7dab:	59                   	pop    %rcx
+    7dac:	5b                   	pop    %rbx
+    7dad:	58                   	pop    %rax
+    7dae:	c3                   	retq   
+
+Disassembly of section .gdt:
+
+0000000000007daf <__gdt_null_ld>:
+	...
+
+0000000000007db0 <_GLOBAL_OFFSET_TABLE_>:
+    7db0:	00 00                	add    %al,(%rax)
+    7db2:	00 00                	add    %al,(%rax)
+    7db4:	00 00                	add    %al,(%rax)
+	...
+
+0000000000007db7 <__gdt_code_ld>:
+    7db7:	ff                   	(bad)  
+    7db8:	ff 00                	incl   (%rax)
+    7dba:	00 00                	add    %al,(%rax)
+    7dbc:	9a                   	(bad)  
+    7dbd:	cf                   	iret   
+	...
+
+0000000000007dbf <__gdt_data_ld>:
+    7dbf:	ff                   	(bad)  
+    7dc0:	ff 00                	incl   (%rax)
+    7dc2:	00 00                	add    %al,(%rax)
+    7dc4:	92                   	xchg   %eax,%edx
+    7dc5:	cf                   	iret   
+	...
+
+0000000000007dc7 <__gdt_descriptor_ld>:
+    7dc7:	18 00                	sbb    %al,(%rax)
+    7dc9:	af                   	scas   %es:(%rdi),%eax
+    7dca:	7d 00                	jge    7dcc <__gdt_descriptor_ld+0x5>
+	...
+
+Disassembly of section .sig:
+
+0000000000007dfe <.sig>:
+    7dfe:	55                   	push   %rbp
+    7dff:	aa                   	stos   %al,%es:(%rdi)
