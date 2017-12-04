@@ -8,3 +8,5 @@ Keys:
 - L - load specified number of sectors from specified disk and sector to selected RAM address
 - J - jump to selected instruction in RAM
 - P - same as J but switches to Protected Mode before jumping
+
+![Alt text](/screenshots/1.png?raw=true)
