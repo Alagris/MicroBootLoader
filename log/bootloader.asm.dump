@@ -20,19 +20,19 @@ Disassembly of section .text:
     7c14:	89 ec                	mov    %ebp,%esp
     7c16:	6a 01                	pushq  $0x1
     7c18:	6a 01                	pushq  $0x1
-    7c1a:	68 80 00 68 fe       	pushq  $0xfffffffffe680080
-    7c1f:	7d                 	jge    7bda <__bytes_per_page_ld+0x7928>
+    7c1a:	68 80 00 68 00       	pushq  $0x680080
+    7c1f:	7e                 	jle    7bda <__bytes_per_page_ld+0x7928>
 
 0000000000007c20 <loop>:
     7c20:	b9 03 00 66 89       	mov    $0x89660003,%ecx
     7c25:	e6 e8                	out    %al,$0xe8
-    7c27:	19 01                	sbb    %eax,(%rcx)
-    7c29:	e8 56 01 b9 17       	callq  17b97d84 <__gdt_descriptor_ld+0x17b8ffbd>
-    7c2e:	00 67 8b             	add    %ah,-0x75(%rdi)
+    7c27:	46 01 e8             	rex.RX add %r13d,%eax
+    7c2a:	c9                   	leaveq 
+    7c2b:	00 b9 17 00 67 8b    	add    %bh,-0x7498ffe9(%rcx)
     7c31:	34 24                	xor    $0x24,%al
-    7c33:	e8 40 01 b4 00       	callq  b47d78 <__gdt_descriptor_ld+0xb3ffb1>
+    7c33:	e8 6d 01 b4 00       	callq  b47da5 <message+0xb3fea0>
     7c38:	cd 16                	int    $0x16
-    7c3a:	e8 52 01 3c 77       	callq  773c7d91 <__gdt_descriptor_ld+0x773bffca>
+    7c3a:	e8 c5 00 3c 77       	callq  773c7d04 <message+0x773bfdff>
     7c3f:	74 38                	je     7c79 <w_pressed>
     7c41:	3c 73                	cmp    $0x73,%al
     7c43:	74 3c                	je     7c81 <s_pressed>
@@ -51,7 +51,7 @@ Disassembly of section .text:
     7c5d:	3c 6c                	cmp    $0x6c,%al
     7c5f:	74 6e                	je     7ccf <l_pressed>
     7c61:	3c 6a                	cmp    $0x6a,%al
-    7c63:	0f 84 85 00 3c 7a    	je     7a3c7cee <__gdt_descriptor_ld+0x7a3bff27>
+    7c63:	0f 84 85 00 3c 7a    	je     7a3c7cee <message+0x7a3bfde9>
     7c69:	74 48                	je     7cb3 <z_pressed>
     7c6b:	3c 78                	cmp    $0x78,%al
     7c6d:	74 4a                	je     7cb9 <x_pressed>
@@ -125,154 +125,278 @@ Disassembly of section .text:
     7ced:	bc 00 00 ff e0       	mov    $0xe0ff0000,%esp
 
 0000000000007cf2 <continue_loop>:
-    7cf2:	e9 2b ff         	jmpq   a3d7c22 <__gdt_descriptor_ld+0xa3cfe5b>
+    7cf2:	e9 2b ff         	jmpq   ffffffffb4517c22 <message+0xffffffffb450fd1d>
 
-0000000000007cf5 <debugnibble>:
-    7cf5:	3c 0a                	cmp    $0xa,%al
-    7cf7:	7c 04                	jl     7cfd <debughex_digit>
+0000000000007cf5 <println>:
+    7cf5:	50                   	push   %rax
+    7cf6:	b4 0e                	mov    $0xe,%ah
+    7cf8:	b0 0a                	mov    $0xa,%al
+    7cfa:	cd 10                	int    $0x10
+    7cfc:	b0 0d                	mov    $0xd,%al
+    7cfe:	cd 10                	int    $0x10
+    7d00:	58                   	pop    %rax
+    7d01:	c3                   	retq   
 
-0000000000007cf9 <debughex_letter>:
-    7cf9:	04 37                	add    $0x37,%al
-    7cfb:	eb 02                	jmp    7cff <end>
+0000000000007d02 <clear>:
+    7d02:	50                   	push   %rax
+    7d03:	53                   	push   %rbx
+    7d04:	51                   	push   %rcx
+    7d05:	52                   	push   %rdx
+    7d06:	b8 00 06 b7 07       	mov    $0x7b70600,%eax
+    7d0b:	b9 00 00 ba 4f       	mov    $0x4fba0000,%ecx
+    7d10:	18 cd                	sbb    %cl,%ch
+    7d12:	10 b6 00 b2 00 b4    	adc    %dh,-0x4bff4e00(%rsi)
+    7d18:	02 b7 00 cd 10 5a    	add    0x5a10cd00(%rdi),%dh
+    7d1e:	59                   	pop    %rcx
+    7d1f:	5b                   	pop    %rbx
+    7d20:	58                   	pop    %rax
+    7d21:	c3                   	retq   
 
-0000000000007cfd <debughex_digit>:
-    7cfd:	04 30                	add    $0x30,%al
+0000000000007d22 <debugnibble>:
+    7d22:	3c 0a                	cmp    $0xa,%al
+    7d24:	7c 04                	jl     7d2a <debughex_digit>
 
-0000000000007cff <end>:
-    7cff:	b4 0e                	mov    $0xe,%ah
-    7d01:	cd 10                	int    $0x10
-    7d03:	c3                   	retq   
+0000000000007d26 <debughex_letter>:
+    7d26:	04 37                	add    $0x37,%al
+    7d28:	eb 02                	jmp    7d2c <end>
 
-0000000000007d04 <debughexb>:
-    7d04:	50                   	push   %rax
-    7d05:	c0 e8 04             	shr    $0x4,%al
-    7d08:	e8 ea ff 67 8b       	callq  ffffffff8b687cf7 <__gdt_descriptor_ld+0xffffffff8b67ff30>
-    7d0d:	04 24                	add    $0x24,%al
-    7d0f:	24 0f                	and    $0xf,%al
-    7d11:	e8 e1 ff 58 c3       	callq  ffffffffc3597cf7 <__gdt_descriptor_ld+0xffffffffc358ff30>
+0000000000007d2a <debughex_digit>:
+    7d2a:	04 30                	add    $0x30,%al
 
-0000000000007d16 <debughexw>:
-    7d16:	50                   	push   %rax
-    7d17:	88 e0                	mov    %ah,%al
-    7d19:	e8 e8 ff 58 e8       	callq  ffffffffe8597d06 <__gdt_descriptor_ld+0xffffffffe858ff3f>
-    7d1e:	e4 ff                	in     $0xff,%al
-    7d20:	c3                   	retq   
+0000000000007d2c <end>:
+    7d2c:	b4 0e                	mov    $0xe,%ah
+    7d2e:	cd 10                	int    $0x10
+    7d30:	c3                   	retq   
 
-0000000000007d21 <debughexab>:
-    7d21:	83 f9 00             	cmp    $0x0,%ecx
-    7d24:	74 13                	je     7d39 <debughexab_end>
+0000000000007d31 <debughexb>:
+    7d31:	50                   	push   %rax
+    7d32:	c0 e8 04             	shr    $0x4,%al
+    7d35:	e8 ea ff 67 8b       	callq  ffffffff8b687d24 <message+0xffffffff8b67fe1f>
+    7d3a:	04 24                	add    $0x24,%al
+    7d3c:	24 0f                	and    $0xf,%al
+    7d3e:	e8 e1 ff 58 c3       	callq  ffffffffc3597d24 <message+0xffffffffc358fe1f>
 
-0000000000007d26 <debughexab_loop>:
-    7d26:	ac                   	lods   %ds:(%rsi),%al
-    7d27:	e8 da ff ac e8       	callq  ffffffffe8ad7d06 <__gdt_descriptor_ld+0xffffffffe8acff3f>
-    7d2c:	d6                   	(bad)  
-    7d2d:	ff 50 b0             	callq  *-0x50(%rax)
-    7d30:	20 b4 0e cd 10 58 49 	and    %dh,0x495810cd(%rsi,%rcx,1)
-    7d37:	75 ed                	jne    7d26 <debughexab_loop>
+0000000000007d43 <debughexw>:
+    7d43:	50                   	push   %rax
+    7d44:	88 e0                	mov    %ah,%al
+    7d46:	e8 e8 ff 58 e8       	callq  ffffffffe8597d33 <message+0xffffffffe858fe2e>
+    7d4b:	e4 ff                	in     $0xff,%al
+    7d4d:	c3                   	retq   
 
-0000000000007d39 <debughexab_end>:
-    7d39:	ac                   	lods   %ds:(%rsi),%al
-    7d3a:	e8 c7 ff ac e8       	callq  ffffffffe8ad7d06 <__gdt_descriptor_ld+0xffffffffe8acff3f>
-    7d3f:	c3                   	retq   
-    7d40:	ff c3                	inc    %ebx
+0000000000007d4e <debughexab>:
+    7d4e:	83 f9 00             	cmp    $0x0,%ecx
+    7d51:	74 13                	je     7d66 <debughexab_end>
 
-0000000000007d42 <debughexaw>:
-    7d42:	83 f9 00             	cmp    $0x0,%ecx
-    7d45:	74 0f                	je     7d56 <debughexaw_end>
+0000000000007d53 <debughexab_loop>:
+    7d53:	ac                   	lods   %ds:(%rsi),%al
+    7d54:	e8 da ff ac e8       	callq  ffffffffe8ad7d33 <message+0xffffffffe8acfe2e>
+    7d59:	d6                   	(bad)  
+    7d5a:	ff 50 b0             	callq  *-0x50(%rax)
+    7d5d:	20 b4 0e cd 10 58 49 	and    %dh,0x495810cd(%rsi,%rcx,1)
+    7d64:	75 ed                	jne    7d53 <debughexab_loop>
 
-0000000000007d47 <debughexaw_loop>:
-    7d47:	ad                   	lods   %ds:(%rsi),%eax
-    7d48:	e8 cb ff 50 b0       	callq  ffffffffb0517d18 <__gdt_descriptor_ld+0xffffffffb050ff51>
-    7d4d:	20 b4 0e cd 10 58 49 	and    %dh,0x495810cd(%rsi,%rcx,1)
-    7d54:	75 f1                	jne    7d47 <debughexaw_loop>
+0000000000007d66 <debughexab_end>:
+    7d66:	ac                   	lods   %ds:(%rsi),%al
+    7d67:	e8 c7 ff ac e8       	callq  ffffffffe8ad7d33 <message+0xffffffffe8acfe2e>
+    7d6c:	c3                   	retq   
+    7d6d:	ff c3                	inc    %ebx
 
-0000000000007d56 <debughexaw_end>:
-    7d56:	ad                   	lods   %ds:(%rsi),%eax
-    7d57:	e8 bc ff c3        	callq  50c47d18 <__gdt_descriptor_ld+0x50c3ff51>
+0000000000007d6f <debughexaw>:
+    7d6f:	83 f9 00             	cmp    $0x0,%ecx
+    7d72:	74 0f                	je     7d83 <debughexaw_end>
 
-0000000000007d5b <debughexline>:
-    7d5b:	50                   	push   %rax
-    7d5c:	51                   	push   %rcx
-    7d5d:	89 f0                	mov    %esi,%eax
-    7d5f:	e8 b4 ff 50 b0       	callq  ffffffffb0517d18 <__gdt_descriptor_ld+0xffffffffb050ff51>
-    7d64:	3a b4 0e cd 10 58 b9 	cmp    -0x46a7ef33(%rsi,%rcx,1),%dh
-    7d6b:	0e                   	(bad)  
-    7d6c:	00 e8                	add    %ch,%al
-    7d6e:	b1 ff                	mov    $0xff,%cl
-    7d70:	e8 0f 00 59 58       	callq  58597d84 <__gdt_descriptor_ld+0x5858ffbd>
-    7d75:	c3                   	retq   
+0000000000007d74 <debughexaw_loop>:
+    7d74:	ad                   	lods   %ds:(%rsi),%eax
+    7d75:	e8 cb ff 50 b0       	callq  ffffffffb0517d45 <message+0xffffffffb050fe40>
+    7d7a:	20 b4 0e cd 10 58 49 	and    %dh,0x495810cd(%rsi,%rcx,1)
+    7d81:	75 f1                	jne    7d74 <debughexaw_loop>
 
-0000000000007d76 <debughexlines>:
-    7d76:	83 f9 00             	cmp    $0x0,%ecx
-    7d79:	74 06                	je     7d81 <debughexlines_end>
+0000000000007d83 <debughexaw_end>:
+    7d83:	ad                   	lods   %ds:(%rsi),%eax
+    7d84:	e8 bc ff c3        	callq  50c47d45 <message+0x50c3fe40>
 
-0000000000007d7b <debughexlines_loop>:
-    7d7b:	e8 dd ff 49 75       	callq  754a7d5d <__gdt_descriptor_ld+0x7549ff96>
-    7d80:	fa                   	cli    
+0000000000007d88 <debughexline>:
+    7d88:	50                   	push   %rax
+    7d89:	51                   	push   %rcx
+    7d8a:	89 f0                	mov    %esi,%eax
+    7d8c:	e8 b4 ff 50 b0       	callq  ffffffffb0517d45 <message+0xffffffffb050fe40>
+    7d91:	3a b4 0e cd 10 58 b9 	cmp    -0x46a7ef33(%rsi,%rcx,1),%dh
+    7d98:	0e                   	(bad)  
+    7d99:	00 e8                	add    %ch,%al
+    7d9b:	b1 ff                	mov    $0xff,%cl
+    7d9d:	e8 55 ff 59 58       	callq  585a7cf7 <message+0x5859fdf2>
+    7da2:	c3                   	retq   
 
-0000000000007d81 <debughexlines_end>:
-    7d81:	c3                   	retq   
+0000000000007da3 <debughexlines>:
+    7da3:	83 f9 00             	cmp    $0x0,%ecx
+    7da6:	74 06                	je     7dae <debughexlines_end>
 
-0000000000007d82 <println>:
-    7d82:	50                   	push   %rax
-    7d83:	b4 0e                	mov    $0xe,%ah
-    7d85:	b0 0a                	mov    $0xa,%al
-    7d87:	cd 10                	int    $0x10
-    7d89:	b0 0d                	mov    $0xd,%al
-    7d8b:	cd 10                	int    $0x10
-    7d8d:	58                   	pop    %rax
-    7d8e:	c3                   	retq   
+0000000000007da8 <debughexlines_loop>:
+    7da8:	e8 dd ff 49 75       	callq  754a7d8a <message+0x7549fe85>
+    7dad:	fa                   	cli    
 
-0000000000007d8f <clear>:
-    7d8f:	50                   	push   %rax
-    7d90:	53                   	push   %rbx
-    7d91:	51                   	push   %rcx
-    7d92:	52                   	push   %rdx
-    7d93:	b8 00 06 b7 07       	mov    $0x7b70600,%eax
-    7d98:	b9 00 00 ba 4f       	mov    $0x4fba0000,%ecx
-    7d9d:	18 cd                	sbb    %cl,%ch
-    7d9f:	10 b6 00 b2 00 b4    	adc    %dh,-0x4bff4e00(%rsi)
-    7da5:	02 b7 00 cd 10 5a    	add    0x5a10cd00(%rdi),%dh
-    7dab:	59                   	pop    %rcx
-    7dac:	5b                   	pop    %rbx
-    7dad:	58                   	pop    %rax
+0000000000007dae <debughexlines_end>:
     7dae:	c3                   	retq   
-
-Disassembly of section .gdt:
-
-0000000000007daf <__gdt_null_ld>:
-	...
-
-0000000000007db0 <_GLOBAL_OFFSET_TABLE_>:
-    7db0:	00 00                	add    %al,(%rax)
-    7db2:	00 00                	add    %al,(%rax)
-    7db4:	00 00                	add    %al,(%rax)
-	...
-
-0000000000007db7 <__gdt_code_ld>:
-    7db7:	ff                   	(bad)  
-    7db8:	ff 00                	incl   (%rax)
-    7dba:	00 00                	add    %al,(%rax)
-    7dbc:	9a                   	(bad)  
-    7dbd:	cf                   	iret   
-	...
-
-0000000000007dbf <__gdt_data_ld>:
-    7dbf:	ff                   	(bad)  
-    7dc0:	ff 00                	incl   (%rax)
-    7dc2:	00 00                	add    %al,(%rax)
-    7dc4:	92                   	xchg   %eax,%edx
-    7dc5:	cf                   	iret   
-	...
-
-0000000000007dc7 <__gdt_descriptor_ld>:
-    7dc7:	18 00                	sbb    %al,(%rax)
-    7dc9:	af                   	scas   %es:(%rdi),%eax
-    7dca:	7d 00                	jge    7dcc <__gdt_descriptor_ld+0x5>
-	...
 
 Disassembly of section .sig:
 
-0000000000007dfe <.sig>:
+0000000000007dfe <_GLOBAL_OFFSET_TABLE_+0x4e>:
     7dfe:	55                   	push   %rbp
     7dff:	aa                   	stos   %al,%es:(%rdi)
+
+Disassembly of section .afterboot:
+
+0000000000007e00 <vga_print_string>:
+    7e00:	52                   	push   %rdx
+    7e01:	53                   	push   %rbx
+    7e02:	ba 00 00 00 00       	mov    $0x0,%edx
+    7e07:	bb 19 00 00 00       	mov    $0x19,%ebx
+    7e0c:	f7 f3                	div    %ebx
+    7e0e:	89 d0                	mov    %edx,%eax
+    7e10:	ba a0 00 00 00       	mov    $0xa0,%edx
+    7e15:	f7 e2                	mul    %edx
+    7e17:	8d 90 00 80 0b 00    	lea    0xb8000(%rax),%edx
+    7e1d:	b4 0f                	mov    $0xf,%ah
+
+0000000000007e1f <vga_print_string_loop>:
+    7e1f:	8a 01                	mov    (%rcx),%al
+    7e21:	3c 00                	cmp    $0x0,%al
+    7e23:	74 0b                	je     7e30 <vga_print_string_end>
+    7e25:	66 89 02             	mov    %ax,(%rdx)
+    7e28:	83 c1 01             	add    $0x1,%ecx
+    7e2b:	83 c2 02             	add    $0x2,%edx
+    7e2e:	eb ef                	jmp    7e1f <vga_print_string_loop>
+
+0000000000007e30 <vga_print_string_end>:
+    7e30:	5b                   	pop    %rbx
+    7e31:	5a                   	pop    %rdx
+    7e32:	c3                   	retq   
+    7e33:	fa                   	cli    
+    7e34:	31 c0                	xor    %eax,%eax
+    7e36:	8e d8                	mov    %eax,%ds
+    7e38:	8e c0                	mov    %eax,%es
+    7e3a:	8e e0                	mov    %eax,%fs
+    7e3c:	8e e8                	mov    %eax,%gs
+    7e3e:	89 c5                	mov    %eax,%ebp
+    7e40:	8e d0                	mov    %eax,%ss
+    7e42:	89 ec                	mov    %ebp,%esp
+    7e44:	88 16                	mov    %dl,(%rsi)
+    7e46:	4a 7e eb             	rex.WX jle 7e34 <vga_print_string_end+0x4>
+    7e49:	01                 	add    %eax,(%rax)
+
+0000000000007e4a <initial_dl>:
+	...
+
+0000000000007e4b <after_locals>:
+    7e4b:	50                   	push   %rax
+    7e4c:	53                   	push   %rbx
+    7e4d:	51                   	push   %rcx
+    7e4e:	52                   	push   %rdx
+    7e4f:	b8 00 06 b7 07       	mov    $0x7b70600,%eax
+    7e54:	b9 00 00 ba 4f       	mov    $0x4fba0000,%ecx
+    7e59:	18 cd                	sbb    %cl,%ch
+    7e5b:	10 50 53             	adc    %dl,0x53(%rax)
+    7e5e:	51                   	push   %rcx
+    7e5f:	52                   	push   %rdx
+    7e60:	b4 02                	mov    $0x2,%ah
+    7e62:	b7 00                	mov    $0x0,%bh
+    7e64:	b6 00                	mov    $0x0,%dh
+    7e66:	b2 00                	mov    $0x0,%dl
+    7e68:	cd 10                	int    $0x10
+    7e6a:	5a                   	pop    %rdx
+    7e6b:	59                   	pop    %rcx
+    7e6c:	5b                   	pop    %rbx
+    7e6d:	58                   	pop    %rax
+    7e6e:	5a                   	pop    %rdx
+    7e6f:	59                   	pop    %rcx
+    7e70:	5b                   	pop    %rbx
+    7e71:	58                   	pop    %rax
+    7e72:	0f 01 16             	lgdt   (%rsi)
+    7e75:	9e                   	sahf   
+    7e76:	7e 0f                	jle    7e87 <gdt_null+0x1>
+    7e78:	20 c0                	and    %al,%al
+    7e7a:	66 83 c8 01          	or     $0x1,%ax
+    7e7e:	0f 22 c0             	mov    %rax,%cr0
+    7e81:	ea                   	(bad)  
+    7e82:	a8 7e                	test   $0x7e,%al
+    7e84:	08 00                	or     %al,(%rax)
+
+0000000000007e86 <gdt_null>:
+	...
+
+0000000000007e8e <gdt_code>:
+    7e8e:	ff                   	(bad)  
+    7e8f:	ff 00                	incl   (%rax)
+    7e91:	00 00                	add    %al,(%rax)
+    7e93:	9a                   	(bad)  
+    7e94:	cf                   	iret   
+	...
+
+0000000000007e96 <gdt_data>:
+    7e96:	ff                   	(bad)  
+    7e97:	ff 00                	incl   (%rax)
+    7e99:	00 00                	add    %al,(%rax)
+    7e9b:	92                   	xchg   %eax,%edx
+    7e9c:	cf                   	iret   
+	...
+
+0000000000007e9e <gdt_descriptor>:
+    7e9e:	18 00                	sbb    %al,(%rax)
+    7ea0:	86 7e 00             	xchg   %bh,0x0(%rsi)
+	...
+
+0000000000007ea4 <vga_current_line>:
+    7ea4:	00 00                	add    %al,(%rax)
+	...
+
+0000000000007ea8 <protected_mode>:
+    7ea8:	66 b8 10 00          	mov    $0x10,%ax
+    7eac:	8e d8                	mov    %eax,%ds
+    7eae:	8e c0                	mov    %eax,%es
+    7eb0:	8e e0                	mov    %eax,%fs
+    7eb2:	8e e8                	mov    %eax,%gs
+    7eb4:	8e d0                	mov    %eax,%ss
+    7eb6:	bd 00 70 00 00       	mov    $0x7000,%ebp
+    7ebb:	89 ec                	mov    %ebp,%esp
+    7ebd:	50                   	push   %rax
+    7ebe:	53                   	push   %rbx
+    7ebf:	51                   	push   %rcx
+    7ec0:	52                   	push   %rdx
+    7ec1:	b9 05 7f 00 00       	mov    $0x7f05,%ecx
+    7ec6:	a1 a4 7e 00 00 ba 00 	movabs 0xba00007ea4,%eax
+    7ecd:	00 00 
+    7ecf:	00 bb 19 00 00 00    	add    %bh,0x19(%rbx)
+    7ed5:	f7 f3                	div    %ebx
+    7ed7:	89 d0                	mov    %edx,%eax
+    7ed9:	ba a0 00 00 00       	mov    $0xa0,%edx
+    7ede:	f7 e2                	mul    %edx
+    7ee0:	8d 90 00 80 0b 00    	lea    0xb8000(%rax),%edx
+    7ee6:	b4 0f                	mov    $0xf,%ah
+
+0000000000007ee8 <loop>:
+    7ee8:	8a 01                	mov    (%rcx),%al
+    7eea:	3c 00                	cmp    $0x0,%al
+    7eec:	74 0b                	je     7ef9 <end>
+    7eee:	66 89 02             	mov    %ax,(%rdx)
+    7ef1:	83 c1 01             	add    $0x1,%ecx
+    7ef4:	83 c2 02             	add    $0x2,%edx
+    7ef7:	eb ef                	jmp    7ee8 <loop>
+
+0000000000007ef9 <end>:
+    7ef9:	ff 05 a4 7e 00 00    	incl   0x7ea4(%rip)        # fda3 <message+0x7e9e>
+    7eff:	5a                   	pop    %rdx
+    7f00:	59                   	pop    %rcx
+    7f01:	5b                   	pop    %rbx
+    7f02:	58                   	pop    %rax
+    7f03:	eb fe                	jmp    7f03 <end+0xa>
+
+0000000000007f05 <message>:
+    7f05:	68 65 6c 6c 6f       	pushq  $0x6f6c6c65
+    7f0a:	20 70 72             	and    %dh,0x72(%rax)
+    7f0d:	6f                   	outsl  %ds:(%rsi),(%dx)
+    7f0e:	74 65                	je     7f75 <message+0x70>
+    7f10:	63 74 65 64          	movslq 0x64(%rbp,%riz,2),%esi
+    7f14:	20 6d 6f             	and    %ch,0x6f(%rbp)
+    7f17:	64                   	fs
+    7f18:	65                   	gs
+	...

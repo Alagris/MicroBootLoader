@@ -11,9 +11,11 @@ SECTIONS
     __bytes_per_line_ld = __words_per_line_ld * 2;
     __bytes_per_page_ld = __screenheight_ld  * __bytes_per_line_ld;
     __byte_per_scroll_ld = __bytes_per_page_ld - __bytes_per_line_ld;
+    __afterboot_begin_ld = 0x7E00;
     . = 0x7C00;
     .text : {
         /* Place the code in start.o before all other code */
+        /*build/obj/afterboot.o(.afterboot);*/
         build/obj/start.o(.text);
         *(.text);
     }
@@ -23,7 +25,17 @@ SECTIONS
         *(.data);
         *(.rodata);
     }
-    .gdt : {
+    /* Place the boot signature at VMA 0x7DFE */
+    . = 0x7DFE;
+    .sig : {
+        SHORT(0xaa55);
+    }
+    /**/
+    . = __afterboot_begin_ld;
+    .afterboot : {
+        *(.afterboot);
+    }
+    /*.gdt : {
         __gdt_start_ld = . ;
         __gdt_null_ld = . ;
             LONG(0x0);
@@ -46,16 +58,10 @@ SECTIONS
         __gdt_descriptor_ld = . ;
             SHORT(__gdt_end_ld - __gdt_start_ld);
             LONG(__gdt_start_ld);
-    }
-    /* Place the boot signature at VMA 0x7DFE */
-    . = 0x7DFE;
-    .sig : {
-        SHORT(0xaa55);
-    }
-    /*. = 0x7E00;*/
-    .afterboot : {
-        *(.afterboot)
-    }
+        __gdt_code32_segment_ld = 8;
+        __gdt_data_segment_offset_ld = __gdt_data_ld - __gdt_start_ld;
+        __gdt_data_segment_size_ld = __gdt_end_ld - __gdt_data_ld;
+    }*/
 
     /* Remove sections that won't be relevant to us */
     /DISCARD/ : {

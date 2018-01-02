@@ -1,4 +1,5 @@
-
+.ifndef STACK
+.set STACK, 1
 /* Push registers ax, bx, cx and dx. Lightweight `pusha`. */
 .macro PUSH_ADX
     push %ax
@@ -18,16 +19,18 @@ so this cancels that one.
     pop %ax
 .endm
 
-// .macro PUSH_EADX
-//     push %eax
-//     push %ebx
-//     push %ecx
-//     push %edx
-// .endm
+.macro PUSH_EADX
+    push %eax
+    push %ebx
+    push %ecx
+    push %edx
+.endm
 
-// .macro POP_EDAX
-//     pop %edx
-//     pop %ecx
-//     pop %ebx
-//     pop %eax
-// .endm
+.macro POP_EDAX
+    pop %edx
+    pop %ecx
+    pop %ebx
+    pop %eax
+.endm
+
+.endif

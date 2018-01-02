@@ -35,20 +35,6 @@ __start_16:
 	pop %ax
 .endm
 
-
-
-
-// .macro CURSOR_POSITION x=$0, y=$0
-//     PUSH_ADX
-//     mov $0x02, %ah
-//     mov $0x00, %bh
-//     mov \x, %dh
-//     mov \y, %dl
-//     int $0x10
-//     POP_DAX
-// .endm
-
-
  /*
 AL  Sectors To Read Count
 CH  Cylinder number
@@ -82,18 +68,27 @@ ES:BX   Buffer Address Pointer
 .endm
 
 
+/*
+Print a null terminated string.
+Use as:
+        PRINT_STRING $s
+        hlt
+    s:
+        .asciz "string"
+*/
+.macro PRINT_STRING s
+    mov \s, %si
+    cld
+    push %ax
+    mov $0x0e, %ah
+1:
+    lodsb
+    or %al, %al
+    jz 1f
+    int $0x10
+    jmp 1b
+1:
+    pop %ax
+.endm
 
 
-
-// .macro PROTECTED_MODE
-//     /* Must come before they are used. */
-//     /* Tell the processor where our Global Descriptor Table is in memory. */
-//     lgdt __gdt_descriptor_ld
-//     /*
-//     Set PE (Protection Enable) bit in CR0 (Control Register 0),
-//     effectively entering protected mode.
-//     */
-//     mov %cr0, %eax
-//     orl $0x1, %eax
-//     mov %eax, %cr0
-// .endm

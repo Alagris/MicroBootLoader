@@ -1,1 +1,0 @@
-This source firectory contains dummy kernel to load by our bootloader.

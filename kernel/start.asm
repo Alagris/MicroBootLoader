@@ -1,5 +1,0 @@
-.section text
-.word 0x1111
-.word 0x1111
-.word 0x1111
-.word 0x2222

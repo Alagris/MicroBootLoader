@@ -1,6 +1,5 @@
-
 .code16
-
+.section .text
 .include "utils.asm"
 boot_begin:
     INIT
@@ -11,7 +10,7 @@ boot_begin:
     //disk
     pushw $0x80  
     //RAM pointer
-    pushw $0x7DFE
+    pushw $__afterboot_begin_ld
     loop:
         mov $3,%cx
         mov %esp, %esi
@@ -50,8 +49,6 @@ boot_begin:
         je q_pressed
         cmp $'a ,%al
         je a_pressed
-        // cmp $'p ,%al
-        // je p_pressed
         jmp continue_loop
         w_pressed:
             subw $__byte_per_scroll_ld,(%esp)
@@ -96,8 +93,5 @@ boot_begin:
             pop %ax
             mov $0,%sp
             jmp %ax
-        // p_pressed:
-            // PROTECTED_MODE
-            // jmp j_pressed
         continue_loop:
         jmp loop
