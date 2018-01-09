@@ -12,28 +12,30 @@ SECTIONS
     __bytes_per_page_ld = __screenheight_ld  * __bytes_per_line_ld;
     __byte_per_scroll_ld = __bytes_per_page_ld - __bytes_per_line_ld;
     __afterboot_begin_ld = 0x7E00;
+    
     . = 0x7C00;
     .text : {
         /* Place the code in start.o before all other code */
         /*build/obj/afterboot.o(.afterboot);*/
+
         build/obj/start.o(.text);
         *(.text);
+        
+        
+        /*. = __afterboot_begin_ld;*/
     }
-
-    /* Place the data after the code */
-    .data : SUBALIGN(4) {
-        *(.data);
-        *(.rodata);
-    }
-    /* Place the boot signature at VMA 0x7DFE */
     . = 0x7DFE;
     .sig : {
         SHORT(0xaa55);
-    }
-    /**/
-    . = __afterboot_begin_ld;
-    .afterboot : {
         *(.afterboot);
+    }
+
+    /* Place the boot signature at VMA 0x7DFE */
+    
+    /**/
+    
+    .sig2 : {
+        SHORT(0xbb66);
     }
     /*.gdt : {
         __gdt_start_ld = . ;

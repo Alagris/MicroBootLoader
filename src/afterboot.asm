@@ -4,7 +4,9 @@
 .macro BEGIN
     .code16
     cli
-    // Set %cs to 0. TODO Is that really needed? 
+    // the following instruction (ljmp) should 
+    // not be used in this case, because we are not sure
+    // where this code will be loaded to in RAM
     // ljmp $0, $1f
     // 1:
     xor %ax, %ax
@@ -92,8 +94,7 @@ end:
     ljmp $CODE_SEG, $protected_mode
 
 // Our GDT contains:
-// - a null entry to fill the unusable entry 0:
-//   http://stackoverflow.com/questions/33198282/why-have-the-first-segment-descriptor-of-the-global-descriptor-table-contain-onl
+// - a null entry to fill the unusable entry 0
 // - a code and data. Both are necessary, because:
 //   - it is impossible to write to the code segment
 //   - it is impossible execute the data segment
@@ -115,7 +116,9 @@ gdt_code:
     .byte 0b10011010
     .byte 0b11001111
     .byte 0x0
-gdt_data:
+gdt_data://this is in fact not needed
+    //because the only thing we plan to do is tp
+    //display "hello protected mode". We don't need variables for that
     .word 0xffff
     .word 0x0
     .byte 0x0
@@ -127,12 +130,12 @@ gdt_descriptor:
     .word gdt_end - gdt_start
     .long gdt_start
 vga_current_line:
+    //this variable also isn't really needed
     .long 0
 .code32
 protected_mode:
     // Setup the other segments.
     // Those movs are mandatory because they update the descriptor cache:
-    // http://wiki.osdev.org/Descriptor_Cache
     
     mov $DATA_SEG, %ax
     mov %ax, %ds

@@ -67,6 +67,10 @@ DUMPED_ASM_FILE=$(LOGDIR)/$(DUMP_ASM_NAME)
 DUMPED_BIN_FILE=$(LOGDIR)/$(DUMP_BIN_NAME)
 DUMPED_IMG_FILE=$(LOGDIR)/$(DUMP_IMG_NAME)
 #############
+#other
+#############
+CODE_SECTORS=2
+#############
 #make instructions
 #############
 
@@ -75,7 +79,7 @@ $(ISO_FILE) : $(IMAGE_FILE) $(DUMPED_IMG_FILE)
 
 $(IMAGE_FILE): $(BINARY_FILE) $(ISODIR) $(DUMPED_BIN_FILE) 
 	dd if=/dev/zero of=$@ bs=1024 count=1440 &&         \
-	dd if=$< of=$@ seek=0 count=1 conv=notrunc 
+	dd if=$< of=$@ seek=0 count=$(CODE_SECTORS) conv=notrunc 
 
 # $(BUILDDIR)/$(BINARY_NAME).$(BIN_SFX): $(OBJECTS)
 # 	$(LD) $(LD_FLAGS) $(OBJECTS) -o $@

@@ -3,3 +3,4 @@
 build/iso/*
 build/obj/*
 build/*.bin
+.DS_Store

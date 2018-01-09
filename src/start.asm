@@ -6,9 +6,9 @@ boot_begin:
     //sectors count
     pushw $1
     //sector
-    pushw $1
-    //disk
-    pushw $0x80  
+    pushw $2
+    //disk ($0x80)
+    pushw $0
     //RAM pointer
     pushw $__afterboot_begin_ld
     loop:
